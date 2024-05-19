@@ -299,17 +299,6 @@ class CSAutomata:
             else:
                 Ri_values.append(col_sum / self.size)
         current_result = sum(Ri_values) / len(Ri_values)
-        self.result_data.append(current_result)
-        self.plot_result()
-
-    def plot_result(self):
-        plt.figure(figsize=(8, 6))
-        plt.plot(range(1, self.iterations + 1), self.result_data, marker='o', linestyle='-')
-        plt.title('Current Result')
-        plt.xlabel('Iterations')
-        plt.ylabel('Average Ri')
-        plt.grid(True)
-        plt.show()
 
 
 if __name__ == "__main__":
