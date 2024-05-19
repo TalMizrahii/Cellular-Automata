@@ -14,9 +14,9 @@ class CSAutomata:
         self.interval = 10
         self.iterations = 0
         self.running = False
-        self.result_data = []  # To store result data for each iteration
-        self.run_count = 0  # To keep track of the number of runs
-        self.all_results = []  # To store result data for each run
+        self.result_data = []
+        self.run_count = 0
+        self.all_results = []
 
         self.setup_menu()
         self.canvas = tk.Canvas(master, width=self.size * self.cell_size, height=self.size * self.cell_size)
@@ -100,21 +100,12 @@ class CSAutomata:
         self.run_count = 0
 
     def run(self):
-        if self.running and self.iterations < 250 and self.run_count > 0:
+        if self.running:
             self.iterations += 1
             self.update_grid()
             self.draw_grid()
-            self.calculate_result()
             self.master.after(self.interval, self.run)
             print(f"Iteration: {self.iterations}")
-        elif self.iterations >= 250:
-            self.iterations = 0
-            self.run_count -= 1
-            self.all_results.append(self.result_data)
-            self.result_data = []
-            self.rerun_game()
-        elif self.run_count == 0:
-            self.plot_result()
 
     def update_grid(self):
         new_grid = [[0 for _ in range(self.size)] for _ in range(self.size)]
@@ -147,6 +138,7 @@ class CSAutomata:
                 else:
                     new_grid[i][j] = self.grid[i][j]
         self.grid = new_grid
+
     def calculate_result(self):
         col_sums = [sum(col) for col in zip(*self.grid)]  # Sum of each column
         Ri_values = []
@@ -161,7 +153,8 @@ class CSAutomata:
     def plot_result(self):
         plt.figure(figsize=(8, 6))
         for idx, result_data in enumerate(self.all_results):
-            plt.plot(range(1, len(result_data) + 1), result_data, marker='o', linestyle='-', markersize=3, label=f"Run {idx + 1}")
+            plt.plot(range(1, len(result_data) + 1), result_data, marker='o', linestyle='-', markersize=3,
+                     label=f"Run {idx + 1}")
         plt.title('Average Ri Over Multiple Runs')
         plt.xlabel('Iterations')
         plt.ylabel('Average Ri')
