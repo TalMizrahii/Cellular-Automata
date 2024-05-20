@@ -141,14 +141,16 @@ class CSAutomata:
                 low_left = self.grid[(i + 1) % self.size][(j - 1) % self.size]
                 right_sum = right + low_right + top_right
                 left_sum = left + top_left + low_left
-                if low == 1 and low_left == 0 and low_right == 0:
+                if top == 1 and top_left == 0 and top_right == 0:
                     new_grid[i][j] = 1
+                elif right_sum + left_sum + top + low + me == 9:
+                    new_grid[i][j] = random.randint(0, 1)
                 elif right_sum + left_sum >= 4:
                     new_grid[i][j] = 0
                 elif right_sum + left_sum <= 2:
                     new_grid[i][j] = 1
                 else:
-                    new_grid[i][j] = self.grid[i][j]
+                    new_grid[i][j] = random.randint(0, 1)
         self.grid = new_grid
 
     def calculate_result(self):
