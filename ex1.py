@@ -107,44 +107,6 @@ class CSAutomata:
             self.master.after(self.interval, self.run)
             print(f"Iteration: {self.iterations}")
 
-    def update_grid(self):
-        new_grid = [[0 for _ in range(self.size)] for _ in range(self.size)]
-        for i in range(self.size):
-            for j in range(self.size):
-                me = self.grid[i][j]
-                # Column rule
-                top = self.grid[(i - 1) % self.size][j]
-                low = self.grid[(i + 1) % self.size][j]
-                # Row rule
-                left = self.grid[i][(j - 1) % self.size]
-                right = self.grid[i][(j + 1) % self.size]
-                # Diagonals top
-                top_left = self.grid[(i - 1) % self.size][(j - 1) % self.size]
-                top_right = self.grid[(i - 1) % self.size][(j + 1) % self.size]
-                # Diagonals bottom
-                low_right = self.grid[(i + 1) % self.size][(j + 1) % self.size]
-                low_left = self.grid[(i + 1) % self.size][(j - 1) % self.size]
-                right_sum = right + low_right + top_right
-                left_sum = left + top_left + low_left
-                middle_sum = left + right + me
-                top_sum = top + top_left + low_left
-                low_sum = low + low_left + low_right
-                if top == 0 and top_left == top_right == 1:
-                    new_grid[i][j] = 0
-                elif right_sum + left_sum >= 4:
-                    new_grid[i][j] = 0
-                elif right_sum + left_sum == 1 or left_sum + right_sum == 2:
-                    new_grid[i][j] = 1
-                elif left_sum + right_sum == 0 and me == 0 and top_sum == 1 and low_sum == 1:
-                    new_grid[i][j] = 1
-                elif top_sum + middle_sum + low_sum == 1:
-                    new_grid[i][j] = 1
-
-                else:
-                    new_grid[i][j] = self.grid[i][j]
-        self.grid = new_grid
-
-    # ORIGINAL
     # def update_grid(self):
     #     new_grid = [[0 for _ in range(self.size)] for _ in range(self.size)]
     #     for i in range(self.size):
@@ -164,15 +126,52 @@ class CSAutomata:
     #             low_left = self.grid[(i + 1) % self.size][(j - 1) % self.size]
     #             right_sum = right + low_right + top_right
     #             left_sum = left + top_left + low_left
-    #             if top == 0 and top_left == 1 and top_right == 1:
+    #             middle_sum = left + right + me
+    #             top_sum = top + top_left + low_left
+    #             low_sum = low + low_left + low_right
+    #             if top == 0 and top_left == top_right == 1:
     #                 new_grid[i][j] = 0
     #             elif right_sum + left_sum >= 4:
     #                 new_grid[i][j] = 0
-    #             elif right_sum + left_sum <= 2:
+    #             elif right_sum + left_sum == 1 or left_sum + right_sum == 2:
+    #                 new_grid[i][j] = 1
+    #             elif top_sum + middle_sum + low_sum == 1:
     #                 new_grid[i][j] = 1
     #             else:
     #                 new_grid[i][j] = self.grid[i][j]
     #     self.grid = new_grid
+
+    # ORIGINAL
+    def update_grid(self):
+        new_grid = [[0 for _ in range(self.size)] for _ in range(self.size)]
+        for i in range(self.size):
+            for j in range(self.size):
+                me = self.grid[i][j]
+                # Column rule
+                top = self.grid[(i - 1) % self.size][j]
+                low = self.grid[(i + 1) % self.size][j]
+                # Row rule
+                left = self.grid[i][(j - 1) % self.size]
+                right = self.grid[i][(j + 1) % self.size]
+                # Diagonals top
+                top_left = self.grid[(i - 1) % self.size][(j - 1) % self.size]
+                top_right = self.grid[(i - 1) % self.size][(j + 1) % self.size]
+                # Diagonals bottom
+                low_right = self.grid[(i + 1) % self.size][(j + 1) % self.size]
+                low_left = self.grid[(i + 1) % self.size][(j - 1) % self.size]
+                right_sum = right + low_right + top_right
+                left_sum = left + top_left + low_left
+                if top == 0 and top_left == 1 and top_right == 1:
+                    new_grid[i][j] = 0
+                elif right_sum + left_sum >= 4:
+                    new_grid[i][j] = 0
+                elif right_sum + left_sum <= 2:
+                    new_grid[i][j] = 1
+                elif low == 0 and low_left == 1 and low_right == 1:
+                    new_grid[i][j] = 0
+                else:
+                    new_grid[i][j] = self.grid[i][j]
+        self.grid = new_grid
 
     def calculate_result(self):
         col_sums = [sum(col) for col in zip(*self.grid)]  # Sum of each column
