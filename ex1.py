@@ -6,6 +6,7 @@ import matplotlib.cm as cm
 
 class CSAutomata:
     def __init__(self, master):
+        # Initialize class variables.
         self.grid = None
         self.interval_entry = None
         self.size_entry = None
@@ -21,54 +22,65 @@ class CSAutomata:
         self.total_runs = 10
         self.all_results = []
 
+        # Set up the UI components.
         self.setup_menu()
         self.canvas = tk.Canvas(master, width=self.size * self.cell_size, height=self.size * self.cell_size)
         self.canvas.pack()
 
+        # Initialize the grid and draw it on the canvas.
         self.initialize_grid()
         self.draw_grid()
 
     def setup_menu(self):
+        # Create the menu for input parameters and controls.
         menu_frame = tk.Frame(self.master)
         menu_frame.pack()
 
+        # Add grid size input field.
         size_label = tk.Label(menu_frame, text="Grid Size:")
         size_label.pack(side=tk.LEFT)
         self.size_entry = tk.Entry(menu_frame)
         self.size_entry.insert(0, "80")
         self.size_entry.pack(side=tk.LEFT)
 
+        # Add interval input field.
         interval_label = tk.Label(menu_frame, text="Interval (ms):")
         interval_label.pack(side=tk.LEFT)
         self.interval_entry = tk.Entry(menu_frame)
         self.interval_entry.insert(0, "10")
         self.interval_entry.pack(side=tk.LEFT)
 
+        # Add start button.
         start_button = tk.Button(menu_frame, text="Start", command=self.start_game)
         start_button.pack(side=tk.LEFT)
 
+        # Add stop button.
         stop_button = tk.Button(menu_frame, text="Stop", command=self.stop_game)
         stop_button.pack(side=tk.LEFT)
 
+        # Add rerun button.
         rerun_button = tk.Button(menu_frame, text="Rerun", command=self.rerun_game)
         rerun_button.pack(side=tk.LEFT)
 
     def initialize_grid(self):
+        # Initialize the grid with random values of 0 and 1.
         self.grid = [[0 for _ in range(self.size)] for _ in range(self.size)]
         total_cells = self.size * self.size
         num_ones = total_cells // 2
 
-        # Randomly populate the grid with exactly half ones and half zeros
+        # Randomly populate the grid with exactly half ones and half zeros.
         ones = [(i, j) for i in range(self.size) for j in range(self.size)]
         random.shuffle(ones)
         for i in range(num_ones):
             row, col = ones[i]
             self.grid[row][col] = 1
 
+        # Reset iterations and result data.
         self.iterations = 0
         self.result_data = []
 
     def draw_grid(self):
+        # Draw the grid on the canvas.
         self.canvas.delete("all")
         for i in range(self.size):
             for j in range(self.size):
@@ -80,6 +92,7 @@ class CSAutomata:
                 )
 
     def start_game(self):
+        # Start the game and validate input parameters.
         try:
             self.size = int(self.size_entry.get())
             self.interval = int(self.interval_entry.get())
@@ -87,6 +100,7 @@ class CSAutomata:
             print("Please enter valid numbers for size and interval.")
             return
 
+        # Adjust canvas size according to grid size.
         self.canvas.config(width=self.size * self.cell_size, height=self.size * self.cell_size)
         self.running = True
         self.run_count = 0
@@ -94,16 +108,19 @@ class CSAutomata:
         self.run()
 
     def stop_game(self):
+        # Stop the game.
         self.running = False
 
     def rerun_game(self):
+        # Rerun the game by reinitializing the grid and result data.
         self.stop_game()
         self.initialize_grid()
         self.draw_grid()
-        self.result_data = []  # Clear result data
+        self.result_data = []
         self.run_count = 0
 
     def run(self):
+        # Run the game iterations and manage multiple runs.
         if self.running and self.run_count < self.total_runs:
             if self.iterations < self.max_iterations:
                 self.iterations += 1
@@ -123,38 +140,40 @@ class CSAutomata:
             self.plot_result()
 
     def update_grid(self):
+        # Update the grid according to specified rules.
         new_grid = [[0 for _ in range(self.size)] for _ in range(self.size)]
         for i in range(self.size):
             for j in range(self.size):
                 me = self.grid[i][j]
-                # Column rule
+                # Column rule.
                 top = self.grid[(i - 1) % self.size][j]
                 low = self.grid[(i + 1) % self.size][j]
-                # Row rule
+                # Row rule.
                 left = self.grid[i][(j - 1) % self.size]
                 right = self.grid[i][(j + 1) % self.size]
-                # Diagonals top
+                # Diagonals top.
                 top_left = self.grid[(i - 1) % self.size][(j - 1) % self.size]
                 top_right = self.grid[(i - 1) % self.size][(j + 1) % self.size]
-                # Diagonals bottom
+                # Diagonals bottom.
                 low_right = self.grid[(i + 1) % self.size][(j + 1) % self.size]
                 low_left = self.grid[(i + 1) % self.size][(j - 1) % self.size]
                 right_sum = right + low_right + top_right
                 left_sum = left + top_left + low_left
-                if top == 1 and top_left == 0 and top_right == 0:
-                    new_grid[i][j] = 1
-                elif right_sum + left_sum + top + low + me == 9:
-                    new_grid[i][j] = random.randint(0, 1)
-                elif right_sum + left_sum >= 4:
-                    new_grid[i][j] = 0
-                elif right_sum + left_sum <= 2:
-                    new_grid[i][j] = 1
+                # Specials
+                all_cells = left_sum + right_sum + top + low + me
+                ver_middle = top + low + me
+                if top_left == left and top_left != top:
+                    new_grid[i][j] = top
+                elif left == top != top_left:
+                    new_grid[i][j] = left
                 else:
-                    new_grid[i][j] = random.randint(0, 1)
+                    new_grid[i][j] = me
+
         self.grid = new_grid
 
     def calculate_result(self):
-        col_sums = [sum(col) for col in zip(*self.grid)]  # Sum of each column
+        # Calculate and store the current result based on the grid state.
+        col_sums = [sum(col) for col in zip(*self.grid)]  # Sum of each column.
         Ri_values = []
         for col_sum in col_sums:
             if col_sum <= self.size / 2:
@@ -165,6 +184,7 @@ class CSAutomata:
         self.result_data.append(current_result)
 
     def plot_result(self):
+        # Plot the results of multiple runs.
         plt.figure(figsize=(10, 6))
         colors = cm.rainbow([i / self.total_runs for i in range(self.total_runs)])
         for idx, result_data in enumerate(self.all_results):
