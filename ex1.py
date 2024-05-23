@@ -164,7 +164,7 @@ class CSAutomata:
                 ver_middle = top + low + me
                 if top_left == left and top_left != top:
                     new_grid[i][j] = top
-                elif left == top != top_left:
+                elif left == top and top != top_left:
                     new_grid[i][j] = left
                 else:
                     new_grid[i][j] = me
