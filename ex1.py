@@ -155,7 +155,7 @@ class CSAutomata:
                 top = self.grid[(i - 1) % self.size][j]
                 # Row rule.
                 left = self.grid[i][(j - 1) % self.size]
-                # Diagonals top.
+                # Diagonal top.
                 top_left = self.grid[(i - 1) % self.size][(j - 1) % self.size]
                 # The core rule conditions.
                 if top_left == left and top_left != top:
