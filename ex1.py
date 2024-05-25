@@ -153,16 +153,10 @@ class CSAutomata:
                 me = self.grid[i][j]
                 # Column rule.
                 top = self.grid[(i - 1) % self.size][j]
-                low = self.grid[(i + 1) % self.size][j]
                 # Row rule.
                 left = self.grid[i][(j - 1) % self.size]
-                right = self.grid[i][(j + 1) % self.size]
                 # Diagonals top.
                 top_left = self.grid[(i - 1) % self.size][(j - 1) % self.size]
-                top_right = self.grid[(i - 1) % self.size][(j + 1) % self.size]
-                # Diagonals bottom.
-                low_right = self.grid[(i + 1) % self.size][(j + 1) % self.size]
-                low_left = self.grid[(i + 1) % self.size][(j - 1) % self.size]
                 # The core rule conditions.
                 if top_left == left and top_left != top:
                     new_grid[i][j] = top
