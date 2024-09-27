@@ -115,11 +115,8 @@ $ git clone https://github.com/TalMizrahii/Cellular-Automata
 # Go into the repository.
 $ cd Cellular-Automata
 
-# install python dependencies
-$ python -m pip install
-
-# install python dependencies
-$ python -m pip install
+# Run the program
+$ cellularAutomata.exe
 
 ```
 ## Author
