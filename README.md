@@ -1,6 +1,7 @@
 <h1 align="center">
   
-  ![python-logo-glassy](https://github.com/user-attachments/assets/4d3a3605-ba5d-45ad-94b5-a6cc2e295832)
+  ![zebra](https://github.com/user-attachments/assets/44729d07-9ec8-420c-852e-5d9910014bd1)
+
   
 Cellular Automata 
 
@@ -78,7 +79,24 @@ This scale is ranged from 0.5 (Chess board) to 1.0. we can see in the example ab
 
 ## Difference Between Runs
 
-Each run of the simulation produces different patterns due to the random initial state. This demonstrates the sensitivity of cellular automata to initial conditions and the diversity of possible outcomes from the same set of rules.
+The variance graph provided shows how much the average proportion of black cells (between runs) deviates from the expected proportion (0.5 for a zebra pattern) over a course of 250 iterations.
+
+* A higher a variance on the graph indicates that the cellular automaton produced stripes with a more uneven distribution of black and white cells across different runs.
+  
+* Conversely, a lower variance suggests more consistent pattern of black and white stripes across different runs.
+
+![image](https://github.com/user-attachments/assets/72b088d2-9f39-4133-ad03-73c3210f008b)
+
+The cellular automaton is deterministic, meaning it should always produce the same output for a given initial state. However, the graph shows some variation between the runs. This due to:
+
+1. Initial configuration: because the initial configuration of black and white cells is randomized, it takes different number of iterations for different runs to reach a stable pattern..
+   
+2. Cyclic grid effects: The rules mentioned above are valid to a cyclic grid, which means the edges of the grid connect. The way this connection is handled influences how the wave propagates across the grid and leads to slight variations between runs.
+
+   
+Considering the two points, the variance graph shows that in the first 50 iterations, the variance decreases rapidly. This is likely due to the "wave strategy" that quickly corrects the initial configuration. The next 150 iterations exhibit a relatively small change in variance, indicating minor "noise" in the data but no significant change in the overall trend. However, in the last 50 iterations, the graph shows a very steep decline. This rapid drop can be attributed to the different waves likely merging into a single, unified wave. This unification process leads the variance to approach (almost) 0.
+
+*Note: The variance doesn't reach absolute 0 because, as we mentioned, there is a single non-converging run causing a slight deviation.
 
 ## Dependencies
 
@@ -92,13 +110,17 @@ You can use [Git](https://git-scm.com). From your command line:
 
 ```bash
 # Clone this repository.
-$ git clone https://github.com/TalMizrahii/
+$ git clone https://github.com/TalMizrahii/Cellular-Automata
 
 # Go into the repository.
-$ cd 
+$ cd Cellular-Automata
 
-# Run the program
-$ 
+# install python dependencies
+$ python -m pip install
+
+# install python dependencies
+$ python -m pip install
+
 ```
 ## Author
 
